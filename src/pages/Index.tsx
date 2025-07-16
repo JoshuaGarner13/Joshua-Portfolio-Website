@@ -839,6 +839,15 @@ function ContactForm() {
           )}
         </form>
       </Form>
+      <noscript>
+        <form name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" hidden>
+          <input type="hidden" name="form-name" value="contact" />
+          <input type="text" name="name" />
+          <input type="email" name="email" />
+          <textarea name="message"></textarea>
+          <input type="text" name="bot-field" />
+        </form>
+      </noscript>
       <canvas ref={confettiRef} className="fixed inset-0 pointer-events-none z-50" style={{display: submitted ? 'block' : 'none'}} />
     </div>
   );
