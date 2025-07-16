@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 const useKonamiCode = () => {
   const [konamiActivated, setKonamiActivated] = useState(false);
@@ -129,13 +129,14 @@ export const EasterEggs = () => {
     <>
       {/* Matrix Rain Effect */}
       {matrixMode && (
-        <div className="fixed inset-0 z-50 pointer-events-none">
-          <div className="w-full h-full bg-black/90 flex items-center justify-center">
-            <div className="text-green-400 font-mono text-sm animate-pulse">
+        <>
+          <MatrixRain />
+          <div className="fixed inset-0 z-50 pointer-events-none flex items-center justify-center">
+            <div className="text-green-400 font-mono text-sm animate-pulse bg-black/70 px-4 py-2 rounded">
               MATRIX MODE ACTIVATED - Press M to exit
             </div>
           </div>
-        </div>
+        </>
       )}
 
       {/* Floating Code Symbols */}
@@ -172,5 +173,64 @@ export const EasterEggs = () => {
         </div>
       )}
     </>
+  );
+};
+
+const MatrixRain = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let animationId: number;
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    let fontSize = 18;
+    let columns = Math.floor(width / fontSize);
+    let drops = Array(columns).fill(1);
+    const chars = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズヅブプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.split('');
+
+    const resize = () => {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+      columns = Math.floor(width / fontSize);
+      drops = Array(columns).fill(1);
+    };
+    resize();
+    window.addEventListener('resize', resize);
+
+    const draw = () => {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+      ctx.fillRect(0, 0, width, height);
+      ctx.font = `${fontSize}px monospace`;
+      ctx.fillStyle = '#39ff14';
+      for (let i = 0; i < columns; i++) {
+        const text = chars[Math.floor(Math.random() * chars.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        if (drops[i] * fontSize > height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        drops[i]++;
+      }
+      animationId = requestAnimationFrame(draw);
+    };
+    draw();
+    return () => {
+      window.removeEventListener('resize', resize);
+      cancelAnimationFrame(animationId);
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="fixed inset-0 w-full h-full z-40 pointer-events-none"
+      style={{ background: 'transparent' }}
+    />
   );
 };
