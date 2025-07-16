@@ -725,12 +725,9 @@ const Index = () => {
   );
 };
 
-import { useForm } from 'react-hook-form';
-
 function ContactForm() {
-  const form = useForm({ mode: 'onTouched' });
-  const [submitted, setSubmitted] = useState(false);
   const confettiRef = useRef(null);
+  const [submitted, setSubmitted] = useState(false);
 
   const launchConfetti = () => {
     const canvas = confettiRef.current;
@@ -776,69 +773,63 @@ function ContactForm() {
     draw();
   };
 
-  const onSubmit = (data) => {
+  // Native form submission handler for confetti
+  const handleNativeSubmit = (e) => {
+    // Optionally, add client-side validation here
+    // If validation fails, e.preventDefault();
     setSubmitted(true);
     launchConfetti();
-    // Here you would send the data to your backend or email service
-    // e.g., fetch('/api/contact', { method: 'POST', body: JSON.stringify(data) })
   };
 
   return (
     <div className="relative">
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 max-w-xl mx-auto bg-card/60 p-8 rounded-xl shadow-lg border border-border/50" name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field">
-          <input type="hidden" name="form-name" value="contact" />
-          <input type="hidden" name="bot-field" />
-          <FormField
-            control={form.control}
+      <form
+        name="contact"
+        method="POST"
+        data-netlify="true"
+        netlify-honeypot="bot-field"
+        action="/thank-you"
+        className="space-y-6 max-w-xl mx-auto bg-card/60 p-8 rounded-xl shadow-lg border border-border/50"
+      >
+        <input type="hidden" name="form-name" value="contact" />
+        <input type="hidden" name="bot-field" />
+        <div>
+          <label htmlFor="name" className="block font-medium mb-1">Name</label>
+          <input
+            id="name"
             name="name"
-            rules={{ required: 'Name is required' }}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Your name" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            type="text"
+            required
+            placeholder="Your name"
+            className="w-full rounded-md border border-border bg-background text-foreground placeholder:text-muted-foreground px-3 py-2 mb-2"
           />
-          <FormField
-            control={form.control}
+        </div>
+        <div>
+          <label htmlFor="email" className="block font-medium mb-1">Email</label>
+          <input
+            id="email"
             name="email"
-            rules={{ required: 'Email is required', pattern: { value: /.+@.+\..+/, message: 'Enter a valid email' } }}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input type="email" placeholder="you@email.com" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            type="email"
+            required
+            placeholder="you@email.com"
+            className="w-full rounded-md border border-border bg-background text-foreground placeholder:text-muted-foreground px-3 py-2 mb-2"
           />
-          <FormField
-            control={form.control}
+        </div>
+        <div>
+          <label htmlFor="message" className="block font-medium mb-1">Message</label>
+          <textarea
+            id="message"
             name="message"
-            rules={{ required: 'Message is required' }}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Message</FormLabel>
-                <FormControl>
-                  <Textarea placeholder="How can I help you?" rows={5} {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            required
+            placeholder="How can I help you?"
+            rows={5}
+            className="w-full rounded-md border border-border bg-background text-foreground placeholder:text-muted-foreground px-3 py-2 mb-2"
           />
-          <div className="flex justify-center">
-            <Button type="submit" size="lg" className="bg-gradient-primary w-full max-w-xs">Send Message</Button>
-          </div>
-          {submitted && (
-            <div className="text-green-600 text-center font-medium pt-2">Thank you! Your message has been sent.</div>
-          )}
-        </form>
-      </Form>
+        </div>
+        <div className="flex justify-center">
+          <Button type="submit" size="lg" className="bg-gradient-primary w-full max-w-xs">Send Message</Button>
+        </div>
+      </form>
       <noscript>
         <form name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" hidden>
           <input type="hidden" name="form-name" value="contact" />
