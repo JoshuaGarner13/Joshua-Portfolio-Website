@@ -417,10 +417,13 @@ const Index = () => {
               size="lg" 
               variant="outline" 
               className="border-accent text-accent hover:bg-accent hover:text-accent-foreground hover:scale-105 transition-spring"
+              asChild
               onMouseEnter={handleButtonHover}
             >
-              <Download className="w-4 h-4 mr-2" />
-              Download CV
+              <a href="/Joshua Garner CV.pdf" target="_blank" rel="noopener noreferrer">
+                <Download className="w-4 h-4 mr-2" />
+                Download CV
+              </a>
             </Button>
           </div>
           
